@@ -17,7 +17,18 @@ class CPF {
                 enumerable: false,
                 configurable: false,
                 value: cpf.replace(/\D+/g, '')
-                //regex para remover qualquer dado que nao seja um digito
+                // Regex para remover qualquer dado que nao seja um digito
+            }
+        });
+
+        // Segundo defineProperties para que value possa receber 
+        // retorno da funcao valida()
+        Object.defineProperties(this, {
+            valido: {
+                writable: false,
+                enumerable: false,
+                configurable: false,
+                value: this.valida()
             }
         });
     }
@@ -26,7 +37,11 @@ class CPF {
         return this.cpfLimpo;
     }
 
-    //retorna true/false para documento valido/invalido
+    get isValid() {
+        return this.valido;
+    }
+
+    // Retorna true/false para documento valido/invalido
     valida() {
         if (this.cpfLimpo.length !== 11) return false;
 
@@ -59,9 +74,8 @@ class CPF {
                 return ac;
             });
 
-
         secondDigit = ((secondDigit * 10) % 11) % 10;
 
         return (secondDigit === Number(this.cpfLimpo[10]));
     }
-}
+};
