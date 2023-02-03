@@ -1,45 +1,67 @@
+
 /**
-     * Função para validar CPF a partir de string
-     * 
-     * @param {*} cpf string CPF
-     * @returns valido: (true/false)
-     */
-function validaCPF(cpf) {
-
-    // Regex: remove qualquer char que nao for um dígito.
-    cpf = cpf.replace(/\D+/g, '');
-
-    if (cpf.length !== 11) return false;
-
-    // Acumula primeiros 9 digitos
-    const digits = [];
-    for (let i = 0; i < 9; i++) {
-        digits.push(Number(cpf[i]));
+ * Class CPF para validação de formulários
+ * recebe como parâmetro string, preferencialmente o input
+ */
+class CPF {
+    constructor(cpf) {
+        Object.defineProperties(this, {
+            cpf: {
+                writable: false,
+                enumerable: false,
+                configurable: false,
+                value: cpf
+            },
+            cpfLimpo: {
+                writable: false,
+                enumerable: false,
+                configurable: false,
+                value: cpf.replace(/\D+/g, '')
+                //regex para remover qualquer dado que nao seja um digito
+            }
+        });
     }
 
-    let firstDigit = digits
-        .map((value, index) => value *= (10 - index))
-        .reduce((ac, value) => {
-            ac += value;
-            return ac;
-        });
+    get value() {
+        return this.cpfLimpo;
+    }
 
-    firstDigit = ((firstDigit * 10) % 11) % 10;
+    //retorna true/false para documento valido/invalido
+    valida() {
+        if (this.cpfLimpo.length !== 11) return false;
 
-    digits.push(Number(cpf[9]));
-    if (firstDigit !== digits[9]) return false;
+        // Teste primeiro digito verificador
 
-    // continua para ultimo digito
+        // Acumula primeiros 9 digitos
+        const digits = [];
+        for (let i = 0; i < 9; i++) {
+            digits.push(Number(this.cpfLimpo[i]));
+        }
 
-    let secondDigit = digits
-        .map((value, index) => value *= (11 - index))
-        .reduce((ac, value) => {
-            ac += value;
-            return ac;
-        });
+        let firstDigit = digits
+            .map((value, index) => value *= (10 - index))
+            .reduce((ac, value) => {
+                ac += value;
+                return ac;
+            });
+
+        firstDigit = ((firstDigit * 10) % 11) % 10;
+
+        digits.push(Number(this.cpfLimpo[9]));
+        if (firstDigit !== digits[9]) return false;
+
+        // Teste segundo digito verificador
+
+        let secondDigit = digits
+            .map((value, index) => value *= (11 - index))
+            .reduce((ac, value) => {
+                ac += value;
+                return ac;
+            });
 
 
-    secondDigit = ((secondDigit * 10) % 11) % 10;
+        secondDigit = ((secondDigit * 10) % 11) % 10;
 
-    return (secondDigit === Number(cpf[10]));
+        return (secondDigit === Number(this.cpfLimpo[10]));
+    }
 }
