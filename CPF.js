@@ -3,9 +3,9 @@
  * recebe como parâmetro string, preferencialmente o input
  * Também é capaz de gerar um novo CPF válido
  */
-export default class CPF {
+export class CPF {
     constructor(cpf = '') {
-        if (typeof cpf === 'number')
+        if (typeof cpf !== 'string')
             throw new TypeError('Parameter "cpf" must be String');
 
         Object.defineProperties(this, {
